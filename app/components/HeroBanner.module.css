@@ -1,0 +1,158 @@
+.bannerWrapper {
+  background-color: var(--color-banner-bg);
+  padding: 2rem 0;
+  overflow: hidden;
+}
+
+.bannerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.leftContent {
+  flex: 1;
+  max-width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.saleTimer {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.timerBoxes {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+.timerBox {
+  background-color: var(--color-dark);
+  color: white;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-dark);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.title span {
+  color: var(--color-primary);
+}
+
+.arrowIcon {
+  background-color: var(--color-dark);
+  color: white;
+  border-radius: 50%;
+  padding: 0.25rem;
+  display: inline-flex;
+}
+
+.couponsContainer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: stretch;
+}
+
+.couponCard {
+  background-color: white;
+  border: 1px dashed #ffb3b3;
+  padding: 0.75rem;
+  text-align: center;
+  min-width: 120px;
+}
+
+.couponAmount {
+  color: var(--color-primary);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.couponCondition {
+  color: var(--color-text-light);
+  font-size: 0.75rem;
+  margin: 0.25rem 0;
+}
+
+.couponCode {
+  color: var(--color-primary);
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.trendCard {
+  background-color: #d1e5ff;
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 200px;
+}
+
+.trendImagePlaceholder {
+  width: 50px;
+  height: 50px;
+  background-color: #b5c4d9;
+  border-radius: 4px;
+}
+
+.trendInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.trendTitle {
+  font-weight: bold;
+  color: #004b99;
+}
+
+.trendPrice {
+  background-color: var(--color-dark);
+  color: white;
+  font-size: 0.85rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+  display: inline-block;
+  align-self: flex-start;
+}
+
+.rightImagePlaceholder {
+  width: 400px;
+  height: 250px;
+  position: absolute;
+  right: -50px;
+  background: linear-gradient(135deg, #ff4747 0%, #cc0000 100%);
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  box-shadow: -10px 10px 30px rgba(0,0,0,0.1);
+  transform: rotate(5deg);
+}
+
+.rightImageText1 {
+  font-size: 3rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.rightImageText2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}

@@ -1,0 +1,408 @@
+.main {
+  background-color: #fff;
+  min-height: 100vh;
+}
+
+/* Top Banner */
+.topBanner {
+  background-color: #000;
+  color: #fff;
+  padding: 0.8rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  font-size: 0.85rem;
+}
+
+.bannerSection {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  cursor: pointer;
+}
+
+.bannerDivider {
+  width: 1px;
+  height: 24px;
+  background-color: #333;
+}
+
+.bannerIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bannerTextContent {
+  display: flex;
+  flex-direction: column;
+}
+
+.bannerTitle {
+  font-weight: bold;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.bannerSubtitle {
+  font-size: 0.75rem;
+}
+
+.textGreen { color: #a4f4a4; }
+.textYellow { color: #ffe7a0; }
+.textWhite { color: #ffffff; }
+
+/* Simplified Header */
+.headerWrapper {
+  border-bottom: 1px solid #eaeaea;
+  background: white;
+}
+
+.headerContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.logoBox {
+  background-color: #ff6a00;
+  color: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 1rem;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
+}
+
+.safeguard {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #00a650;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.headerRight:hover {
+  text-decoration: underline;
+}
+
+/* Main Content Area */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.breadcrumbs a {
+  color: #666;
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
+
+.cartLayout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Left Column - Cart */
+.cartColumn {
+  flex: 1;
+}
+
+.shippingAlert {
+  background-color: #fff4ed;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.emptyCart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  margin-bottom: 3rem;
+}
+
+.emptyCartIcon {
+  color: #dcdcdc;
+  margin-bottom: 1rem;
+}
+
+.emptyCartTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.emptyCartDesc {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.primaryBtn {
+  background-color: #ff6a00;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  width: 250px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+}
+
+.primaryBtn:hover {
+  background-color: #e65c00;
+}
+
+.secondaryBtn {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 250px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.secondaryBtn:hover {
+  background-color: #f9f9f9;
+  border-color: #999;
+}
+
+/* Explore Picks */
+.exploreSection {
+  margin-top: 2rem;
+}
+
+.exploreTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.productCard {
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.productImage {
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.p1 { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+.p2 { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+.p3 { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+.p4 { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%); }
+
+.productInfo {
+  padding: 0.75rem 0;
+}
+
+.productTitle {
+  font-size: 0.9rem;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0.5rem;
+}
+
+.productPrice {
+  font-weight: 800;
+  color: #e53935;
+  font-size: 1.1rem;
+}
+
+/* Right Column - Order Summary */
+.summaryColumn {
+  flex: 0 0 320px;
+}
+
+.summaryCard {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem 0;
+}
+
+.summaryTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.summaryLabel {
+  font-weight: 700;
+  color: #333;
+  font-size: 1rem;
+}
+
+.summaryValue {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.summaryNote {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.checkoutBtn {
+  background-color: #ff6a00;
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 1rem;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 2rem;
+}
+
+.checkoutBtn:hover {
+  background-color: #e65c00;
+}
+
+.securityNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+}
+
+.safePaymentTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 0.5rem;
+}
+
+.safePaymentDesc {
+  font-size: 0.8rem;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.safePaymentHighlight {
+  color: #00a650;
+}
+
+.paymentSection {
+  margin-bottom: 1rem;
+}
+
+.paymentLabel {
+  font-size: 0.85rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.paymentIcons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.paymentIconBox {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0.1rem 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  height: 20px;
+  color: #00529b;
+}
