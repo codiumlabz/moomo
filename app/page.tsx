@@ -4,8 +4,8 @@ import DealsSection from './components/DealsSection';
 import FloatingButtons from './components/FloatingButtons';
 
 export const metadata = {
-  title: 'Shinshan - E-commerce',
-  description: 'A premium e-commerce platform',
+  title: 'BudgetBuy - Your Premium Shopping Destination',
+  description: 'Discover the latest trends and best deals at BudgetBuy.',
 };
 
 export default function Home() {

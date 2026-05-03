@@ -218,3 +218,18 @@
     transform: translateY(0) scale(1);
   }
 }
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .popupContainer {
+    max-width: 90%;
+    padding: 24px;
+    margin: 1rem;
+  }
+  .title {
+    font-size: 20px;
+  }
+  .socialLogins {
+    flex-direction: column;
+  }
+}

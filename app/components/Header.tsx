@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, Download, Globe, User, ShoppingCart, Menu, ChevronDown } from 'lucide-react';
 import styles from './Header.module.css';
+import Image from 'next/image';
 import SignInPopup from './SignInPopup';
 
 export default function Header() {
@@ -13,7 +14,17 @@ export default function Header() {
       <div className="container">
         {/* Top Bar */}
         <div className={styles.topBar}>
-          <div className={styles.logo}>Shinshan</div>
+          <div className={styles.logo}>
+            <Image 
+              src="/name.png" 
+              alt="BudgetBuy Logo" 
+              width={150} 
+              height={40} 
+              priority
+              className={styles.logoImage}
+              style={{ height: 'auto' }}
+            />
+          </div>
           
           <div className={styles.searchContainer}>
             <input 
@@ -31,7 +42,7 @@ export default function Header() {
               <Download size={20} className={styles.actionIcon} />
               <div className={styles.actionText}>
                 <span>Download the</span>
-                <span className={styles.actionTitle}>Shinshan app</span>
+                <span className={styles.actionTitle}>BudgetBuy app</span>
               </div>
             </div>
 

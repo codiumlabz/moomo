@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ChevronRight, Truck, PackageCheck, Smartphone, Lock, User, ShoppingCart, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import styles from './Cart.module.css';
 import SignInPopup from '../components/SignInPopup';
 
@@ -59,7 +60,7 @@ export default function CartPage() {
           </div>
           <div className={styles.bannerTextContent}>
             <div className={`${styles.bannerTitle} ${styles.textYellow}`}>
-              Get the Shinshan App
+              Get the BudgetBuy App
             </div>
           </div>
         </div>
@@ -71,7 +72,7 @@ export default function CartPage() {
           <div className={styles.headerLeft}>
             <Link href="/" style={{ textDecoration: 'none' }}>
               <div className={styles.logoBox}>
-                SHIN<br/>SHAN
+                <Image src="/name.png" alt="BudgetBuy" width={100} height={30} priority style={{ objectFit: 'contain', height: 'auto' }} />
               </div>
             </Link>
             <div className={styles.safeguard}>
@@ -121,7 +122,7 @@ export default function CartPage() {
 
             {/* Explore Picks */}
             <div className={styles.exploreSection}>
-              <h3 className={styles.exploreTitle}>Explore Shinshan's picks</h3>
+              <h3 className={styles.exploreTitle}>Explore BudgetBuy's picks</h3>
               <div className={styles.productsGrid}>
                 {exploreProducts.map(product => (
                   <Link href={`/product/${product.id}`} key={product.id} style={{textDecoration: 'none', display: 'block', minWidth: 0}}>
@@ -162,7 +163,7 @@ export default function CartPage() {
                 <ShieldCheck size={18} color="white" fill="#00a650" /> Safe Payment Options
               </div>
               <p className={styles.safePaymentDesc}>
-                <span className={styles.safePaymentHighlight}>Shinshan is committed to protecting your payment information.</span> We follow PCI DSS standards, use strong encryption, and perform regular reviews of its system to protect your privacy.
+                <span className={styles.safePaymentHighlight}>BudgetBuy is committed to protecting your payment information.</span> We follow PCI DSS standards, use strong encryption, and perform regular reviews of its system to protect your privacy.
               </p>
 
               <div className={styles.paymentSection}>

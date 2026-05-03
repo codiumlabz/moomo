@@ -15,10 +15,15 @@
 }
 
 .logo {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-dark);
-  letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  min-width: 150px;
+}
+
+.logoImage {
+  height: auto;
+  width: 150px;
+  object-fit: contain;
 }
 
 .searchContainer {
@@ -127,3 +132,52 @@
   color: var(--color-primary);
   font-weight: 600;
 }
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .topBar {
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .searchContainer {
+    order: 3;
+    max-width: 100%;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .bottomBar {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+  }
+  .bottomBar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo {
+    font-size: 1.5rem;
+  }
+  .actions {
+    gap: 1rem;
+  }
+  .actionItem span:first-child,
+  .actionTitle {
+    display: none;
+  }
+  .cartBadge {
+    display: flex;
+    margin: 0;
+    position: absolute;
+    top: -5px;
+    right: -10px;
+  }
+  .actionItem {
+    position: relative;
+  }
+  .actionText {
+    display: none;
+  }
+}
+

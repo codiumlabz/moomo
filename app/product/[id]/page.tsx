@@ -46,7 +46,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
           <div className={styles.bannerTextContent}>
             <div className={`${styles.bannerTitle} ${styles.textYellow}`}>
-              Get the Shinshan App
+              Get the BudgetBuy App
             </div>
           </div>
         </div>
@@ -226,7 +226,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             <div className={styles.guaranteeSection}>
               <div className={styles.guaranteeHeader}>
                 <ShieldCheck size={20} color="#00a650" />
-                <strong>Why choose Shinshan? <ChevronRight size={16} /></strong>
+                <strong>Why choose BudgetBuy? <ChevronRight size={16} /></strong>
               </div>
               
               <div className={styles.guaranteeGrid}>
@@ -254,7 +254,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             </div>
 
             <div className={styles.plantingSection}>
-              🌳 <strong>Shinshan's Tree Planting Program (26M+ trees) <ChevronRight size={16} /></strong>
+              🌳 <strong>BudgetBuy's Tree Planting Program (26M+ trees) <ChevronRight size={16} /></strong>
             </div>
           </div>
         </div>

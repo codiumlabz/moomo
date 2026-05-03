@@ -77,19 +77,10 @@
 }
 
 .logoBox {
-  background-color: #ff6a00;
-  color: white;
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 900;
-  font-size: 1rem;
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 1;
+  padding: 0.5rem 0;
 }
 
 .safeguard {
@@ -405,4 +396,46 @@
   font-weight: bold;
   height: 20px;
   color: #00529b;
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .cartLayout {
+    flex-direction: column;
+  }
+  .summaryColumn {
+    flex: auto;
+    width: 100%;
+  }
+  .productsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .topBanner {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .bannerDivider {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .headerContainer {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .container {
+    padding: 1rem;
+  }
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+  .primaryBtn, .secondaryBtn {
+    width: 100%;
+  }
+  .emptyCart {
+    padding: 2rem 0;
+  }
 }

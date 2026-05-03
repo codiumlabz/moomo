@@ -28,3 +28,15 @@
   color: var(--color-primary);
   border-color: var(--color-primary);
 }
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .floatingContainer {
+    bottom: 1rem;
+    right: 1rem;
+  }
+  .fab {
+    width: 40px;
+    height: 40px;
+  }
+}

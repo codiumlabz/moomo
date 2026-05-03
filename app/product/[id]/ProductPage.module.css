@@ -571,3 +571,54 @@
   margin-top: 2px;
   flex-shrink: 0;
 }
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .productLayout {
+    flex-direction: column;
+  }
+  .galleryColumn {
+    flex: auto;
+    width: 100%;
+  }
+  .mainImageContainer {
+    height: 400px;
+  }
+  .topBanner {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .bannerDivider {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  .guaranteeGrid {
+    grid-template-columns: 1fr;
+  }
+  .statsRow {
+    flex-wrap: wrap;
+  }
+  .priceSection {
+    flex-wrap: wrap;
+  }
+  .mainImageContainer {
+    height: 300px;
+  }
+  .galleryWrapper {
+    flex-direction: column-reverse;
+  }
+  .thumbnails {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  .thumbnail {
+    flex-shrink: 0;
+  }
+}

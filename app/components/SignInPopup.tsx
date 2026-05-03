@@ -26,7 +26,7 @@ export default function SignInPopup({ isOpen, onClose }: SignInPopupProps) {
           <p className={styles.subtitle}>
             {isLogin 
               ? 'Enter your details to access your account.' 
-              : 'Sign up to get started with Shinshan.'}
+              : 'Sign up to get started with BudgetBuy.'}
           </p>
         </div>
 
