@@ -4,8 +4,6 @@ import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { createAvatar } from '@dicebear/core'
-import { bottts } from '@dicebear/collection'
 
 export async function login(formData: FormData) {
   const cookieStore = await cookies()
@@ -35,10 +33,10 @@ export async function signup(formData: FormData) {
   const password = formData.get('password') as string
   const name = formData.get('name') as string
 
-  const avatar = createAvatar(bottts, {
-    seed: email || name,
-  })
-  const avatarUrl = avatar.toDataUri()
+  // Use DiceBear CDN URL (tiny string) instead of a base64 data URI
+  // A data URI is 50-100KB and bloats the JWT cookie causing HTTP 431
+  const seed = encodeURIComponent(email || name)
+  const avatarUrl = `https://api.dicebear.com/9.x/bottts/svg?seed=${seed}`
 
   const { error, data } = await supabase.auth.signUp({
     email,
