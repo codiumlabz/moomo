@@ -81,7 +81,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           </div>
           <div className={styles.bannerTextContent}>
             <div className={`${styles.bannerTitle} ${styles.textYellow}`}>
-              Get the BudgetBuy App
+              Get the Moomo App
             </div>
           </div>
         </div>
@@ -191,7 +191,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <div className={styles.statsRow}>
               <span className={styles.soldCount}>{product.quantity > 0 ? `${product.quantity} items left` : 'Out of Stock'}</span>
               <span className={styles.divider}>|</span>
-              <span className={styles.soldBy}>Sold by BudgetBuy Store <span className={styles.starSeller}><Star size={12} fill="white"/> Star seller <ChevronRight size={12} /></span></span>
+              <span className={styles.soldBy}>Sold by Moomo Store <span className={styles.starSeller}><Star size={12} fill="white"/> Star seller <ChevronRight size={12} /></span></span>
               
               <div className={styles.ratingSection}>
                 <span className={styles.ratingNumber}>4.8</span>
@@ -253,7 +253,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
             <div className={styles.guaranteeSection}>
               <div className={styles.guaranteeHeader}>
                 <ShieldCheck size={20} color="#00a650" />
-                <strong>Why choose BudgetBuy? <ChevronRight size={16} /></strong>
+                <strong>Why choose Moomo? <ChevronRight size={16} /></strong>
               </div>
               
               <div className={styles.guaranteeGrid}>
@@ -281,7 +281,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
             </div>
 
             <div className={styles.plantingSection}>
-              🌳 <strong>BudgetBuy's Tree Planting Program (26M+ trees) <ChevronRight size={16} /></strong>
+              🌳 <strong>Moomo's Tree Planting Program (26M+ trees) <ChevronRight size={16} /></strong>
             </div>
           </div>
         </div>

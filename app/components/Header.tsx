@@ -70,7 +70,7 @@ export default function Header() {
             <Link href="/">
               <Image 
                 src="/name.png" 
-                alt="BudgetBuy Logo" 
+                alt="Moomo Logo" 
                 width={150} 
                 height={40} 
                 priority
@@ -106,7 +106,7 @@ export default function Header() {
               <Download size={20} className={styles.actionIcon} />
               <div className={styles.actionText}>
                 <span>Download the</span>
-                <span className={styles.actionTitle}>BudgetBuy app</span>
+                <span className={styles.actionTitle}>Moomo app</span>
               </div>
             </div>
 

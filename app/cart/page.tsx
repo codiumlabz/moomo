@@ -1,14 +1,60 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, Truck, PackageCheck, Smartphone, Lock, User, ShoppingCart, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Cart.module.css';
 import SignInPopup from '../components/SignInPopup';
+import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
+
+function getInitials(name: string) {
+  if (!name) return '?';
+  return name.charAt(0).toUpperCase();
+}
+
+function stringToColor(str: string) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash % 360);
+  return `hsl(${hue}, 70%, 45%)`;
+}
 
 export default function CartPage() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function getUser() {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (err) {
+        console.error('Error getting user:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    getUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
+
+  const isAuthenticated = !!user;
+  const displayName = user?.user_metadata?.name || user?.email || 'Account';
+  const avatarBg = user ? stringToColor(user.id || user.email || '') : '#ccc';
+  const initials = getInitials(displayName);
 
   // Dummy products for the explore section
   const exploreProducts = [
@@ -60,7 +106,7 @@ export default function CartPage() {
           </div>
           <div className={styles.bannerTextContent}>
             <div className={`${styles.bannerTitle} ${styles.textYellow}`}>
-              Get the BudgetBuy App
+              Get the Moomo App
             </div>
           </div>
         </div>
@@ -72,7 +118,7 @@ export default function CartPage() {
           <div className={styles.headerLeft}>
             <Link href="/" style={{ textDecoration: 'none' }}>
               <div className={styles.logoBox}>
-                <Image src="/name.png" alt="BudgetBuy" width={100} height={30} priority style={{ objectFit: 'contain', height: 'auto' }} />
+                <Image src="/name.png" alt="Moomo" width={100} height={30} priority style={{ objectFit: 'contain', height: 'auto' }} />
               </div>
             </Link>
             <div className={styles.safeguard}>
@@ -80,10 +126,41 @@ export default function CartPage() {
               <span>All data is safeguarded</span>
             </div>
           </div>
-          <div className={styles.headerRight} onClick={() => setIsSignInOpen(true)}>
-            <User size={18} />
-            <span>Sign in / Register</span>
-          </div>
+          {isLoading ? (
+            <div className={styles.headerRight}>
+              <User size={18} />
+              <span>Loading...</span>
+            </div>
+          ) : isAuthenticated ? (
+            <Link href="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div className={styles.headerRight}>
+                <span style={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  backgroundColor: avatarBg,
+                  color: '#fff',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 12,
+                  fontWeight: 600,
+                  marginRight: 4,
+                  flexShrink: 0,
+                }}>
+                  {initials}
+                </span>
+                <span style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {displayName}
+                </span>
+              </div>
+            </Link>
+          ) : (
+            <div className={styles.headerRight} onClick={() => setIsSignInOpen(true)}>
+              <User size={18} />
+              <span>Sign in / Register</span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -110,9 +187,11 @@ export default function CartPage() {
               <h2 className={styles.emptyCartTitle}>Your shopping cart is empty</h2>
               <p className={styles.emptyCartDesc}>Add your favorite items in it.</p>
               
-              <button className={styles.primaryBtn} onClick={() => setIsSignInOpen(true)}>
-                Sign in / Register
-              </button>
+              {!isAuthenticated && (
+                <button className={styles.primaryBtn} onClick={() => setIsSignInOpen(true)}>
+                  Sign in / Register
+                </button>
+              )}
               <Link href="/">
                 <button className={styles.secondaryBtn}>
                   Start shopping
@@ -122,7 +201,7 @@ export default function CartPage() {
 
             {/* Explore Picks */}
             <div className={styles.exploreSection}>
-              <h3 className={styles.exploreTitle}>Explore BudgetBuy's picks</h3>
+              <h3 className={styles.exploreTitle}>Explore Moomo's picks</h3>
               <div className={styles.productsGrid}>
                 {exploreProducts.map(product => (
                   <Link href={`/product/${product.id}`} key={product.id} style={{textDecoration: 'none', display: 'block', minWidth: 0}}>
@@ -163,7 +242,7 @@ export default function CartPage() {
                 <ShieldCheck size={18} color="white" fill="#00a650" /> Safe Payment Options
               </div>
               <p className={styles.safePaymentDesc}>
-                <span className={styles.safePaymentHighlight}>BudgetBuy is committed to protecting your payment information.</span> We follow PCI DSS standards, use strong encryption, and perform regular reviews of its system to protect your privacy.
+                <span className={styles.safePaymentHighlight}>Moomo is committed to protecting your payment information.</span> We follow PCI DSS standards, use strong encryption, and perform regular reviews of its system to protect your privacy.
               </p>
 
               <div className={styles.paymentSection}>

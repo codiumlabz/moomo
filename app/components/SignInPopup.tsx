@@ -69,7 +69,7 @@ export default function SignInPopup({ isOpen, onClose }: SignInPopupProps) {
           <p className={styles.subtitle}>
             {step === "signIn"
               ? "Enter your details to access your account."
-              : "Sign up to get started with BudgetBuy."}
+              : "Sign up to get started with Moomo."}
           </p>
         </div>
 

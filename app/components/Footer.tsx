@@ -16,12 +16,12 @@ export default function Footer() {
           <div className={styles.column}>
             <h3 className={styles.columnTitle}>Company info</h3>
             <ul className={styles.linkList}>
-              <li><Link href="#" className={styles.link}>About BudgetBuy</Link></li>
+              <li><Link href="#" className={styles.link}>About Moomo</Link></li>
               <li><Link href="#" className={styles.link}>Affiliate & Influencer Program: Join to Earn</Link></li>
               <li><Link href="#" className={styles.link}>Contact us</Link></li>
               <li><Link href="#" className={styles.link}>Careers</Link></li>
               <li><Link href="#" className={styles.link}>Press</Link></li>
-              <li><Link href="#" className={styles.link}>BudgetBuy's Tree Planting Program</Link></li>
+              <li><Link href="#" className={styles.link}>Moomo's Tree Planting Program</Link></li>
             </ul>
           </div>
 
@@ -42,15 +42,15 @@ export default function Footer() {
             <ul className={styles.linkList}>
               <li><Link href="#" className={styles.link}>Support center & FAQ</Link></li>
               <li><Link href="#" className={styles.link}>Safety center</Link></li>
-              <li><Link href="#" className={styles.link}>BudgetBuy purchase protection</Link></li>
+              <li><Link href="#" className={styles.link}>Moomo purchase protection</Link></li>
               <li><Link href="#" className={styles.link}>Sitemap</Link></li>
-              <li><Link href="#" className={styles.link}>Partner with BudgetBuy</Link></li>
+              <li><Link href="#" className={styles.link}>Partner with Moomo</Link></li>
             </ul>
           </div>
 
           {/* Column 4: Download App & Social */}
           <div className={styles.column}>
-            <h3 className={styles.columnTitle}>Download the BudgetBuy App</h3>
+            <h3 className={styles.columnTitle}>Download the Moomo App</h3>
             <div className={styles.downloadSection}>
               <div className={styles.featuresGrid}>
                 <div className={styles.featureItem}><CheckCircle size={14} /> Price drop alerts</div>
@@ -86,7 +86,7 @@ export default function Footer() {
             </div>
 
             <div className={styles.socialSection}>
-              <h3 className={styles.columnTitle} style={{ marginBottom: '0' }}>Connect with BudgetBuy</h3>
+              <h3 className={styles.columnTitle} style={{ marginBottom: '0' }}>Connect with Moomo</h3>
               <div className={styles.socialIcons}>
                 <Link href="#" className={styles.socialIcon} aria-label="Instagram">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
@@ -135,7 +135,7 @@ export default function Footer() {
         </div>
 
         <div className={styles.bottomSection}>
-          <div>&copy; 2022 - 2026 BudgetBuy Inc.</div>
+          <div>&copy; 2022 - 2026 Moomo Inc.</div>
           <div className={styles.bottomLinks}>
             <Link href="#" className={styles.bottomLink}>Terms of use</Link>
             <Link href="#" className={styles.bottomLink}>Privacy policy</Link>

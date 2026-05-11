@@ -36,7 +36,7 @@ export default async function AdminLayout({
     <div className={styles.adminContainer}>
       <aside className={styles.sidebar}>
         <div className={styles.logo}>
-          <Link href="/">BudgetBuy Admin</Link>
+          <Link href="/">Moomo Admin</Link>
         </div>
         <nav className={styles.nav}>
           <Link href="/admin" className={styles.navLink}>

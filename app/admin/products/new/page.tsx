@@ -13,7 +13,7 @@ export default function NewProductPage() {
       
       <header className={styles.header}>
         <h1>Add New Product</h1>
-        <p>Fill in the details below to list a new product on BudgetBuy.</p>
+        <p>Fill in the details below to list a new product on Moomo.</p>
       </header>
 
       <ProductForm />

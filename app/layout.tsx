@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BudgetBuy - Premium E-commerce",
+  title: "Moomo - Premium E-commerce",
   description: "Your ultimate destination for premium shopping.",
 };
 
