@@ -8,6 +8,7 @@ import Image from 'next/image';
 import SignInPopup from './SignInPopup';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/app/context/CartContext';
 
 function getInitials(name: string) {
   if (!name) return '?';
@@ -60,6 +61,7 @@ export default function Header() {
   const displayName = user?.user_metadata?.name || user?.email || 'Account';
   const avatarBg = user ? stringToColor(user.id || user.email || '') : '#ccc';
   const initials = getInitials(displayName);
+  const { totalItems } = useCart();
 
   return (
     <header className={styles.headerWrapper}>
@@ -166,7 +168,7 @@ export default function Header() {
               <div className={styles.actionItem} style={{ cursor: 'pointer' }}>
                 <ShoppingCart size={24} className={styles.actionIcon} />
                 <div className={styles.actionText}>
-                  <span className={styles.cartBadge}>0</span>
+                  <span className={styles.cartBadge}>{totalItems > 0 ? totalItems : 0}</span>
                   <span className={styles.actionTitle}>Cart</span>
                 </div>
               </div>

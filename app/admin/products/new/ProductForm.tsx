@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { ImagePlus, X, Loader2, Save } from "lucide-react";
 import styles from "./ProductForm.module.css";
 
-export default function ProductForm() {
+type Category = { id: string; name: string };
+
+export default function ProductForm({ categories }: { categories: Category[] }) {
   const router = useRouter();
   const supabase = createClient();
   const [loading, setLoading] = useState(false);
@@ -21,6 +23,7 @@ export default function ProductForm() {
     isFreeShipping: true,
     qty: "0",
     allowComments: true,
+    categoryId: "",
   });
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +84,8 @@ export default function ProductForm() {
           is_free_shipping: formData.isFreeShipping,
           quantity: parseInt(formData.qty),
           allow_comments: formData.allowComments,
-          images: uploadedUrls
+          images: uploadedUrls,
+          category_id: formData.categoryId || null,
         });
 
       if (insertError) throw insertError;
@@ -122,6 +126,21 @@ export default function ProductForm() {
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Detail the product features..."
             />
+          </div>
+
+          <div className={styles.field}>
+            <label htmlFor="category">Category</label>
+            <select
+              id="category"
+              value={formData.categoryId}
+              onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
+              className={styles.select}
+            >
+              <option value="">— No category —</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
+            </select>
           </div>
 
           <div className={styles.row}>

@@ -26,6 +26,21 @@
   color: #475569;
 }
 
+.select {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e2e8f0;
+  font-size: 1rem;
+  background: white;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #ef4444;
+}
+
 .field input, .field textarea {
   padding: 0.75rem;
   border-radius: 0.5rem;

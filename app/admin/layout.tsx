@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { signOut } from "@/app/auth/actions";
 import Link from "next/link";
 import styles from "./AdminLayout.module.css";
-import { LayoutDashboard, PackagePlus, Users, LogOut, Home } from "lucide-react";
+import { LayoutDashboard, PackagePlus, Users, LogOut, Home, Tag } from "lucide-react";
 
 export default async function AdminLayout({
   children,
@@ -46,6 +46,10 @@ export default async function AdminLayout({
           <Link href="/admin/products/new" className={styles.navLink}>
             <PackagePlus size={20} />
             <span>Add Product</span>
+          </Link>
+          <Link href="/admin/categories" className={styles.navLink}>
+            <Tag size={20} />
+            <span>Categories</span>
           </Link>
           <Link href="/admin/users" className={styles.navLink}>
             <Users size={20} />

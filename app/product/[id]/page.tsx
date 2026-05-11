@@ -2,7 +2,9 @@ import styles from './ProductPage.module.css';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import ProductGallery from './ProductGallery';
-import { Share, Star, Check, ChevronRight, ShieldCheck, Truck, RotateCcw, ChevronDown, Smartphone, PackageCheck, Image as ImageIcon } from 'lucide-react';
+import CommentsSection from './CommentsSection';
+import AddToCartButton from './AddToCartButton';
+import { Share, Star, Check, ChevronRight, ShieldCheck, Truck, RotateCcw, ChevronDown, Smartphone, PackageCheck } from 'lucide-react';
 import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
@@ -22,6 +24,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     console.error('Error fetching product:', error?.message, '| id:', id);
     notFound();
   }
+
+  const [{ data: comments }, { data: { user } }] = await Promise.all([
+    supabase
+      .from('comments')
+      .select('id, rating, body, created_at, profiles(full_name)')
+      .eq('product_id', id)
+      .order('created_at', { ascending: false }),
+    supabase.auth.getUser(),
+  ]);
 
   const currentPrice = product.discount_price || product.price;
   const discountPercent = product.discount_price 
@@ -91,78 +102,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <ProductGallery images={product.images || []} name={product.name} />
 
             {/* Reviews Section */}
-            <div className={styles.reviewsSection}>
-              <div className={styles.reviewsHeader}>
-                <div className={styles.reviewsStats}>
-                  <span className={styles.totalReviews}>8,357 reviews</span>
-                  <span className={styles.dividerLarge}>|</span>
-                  <span className={styles.ratingNumber}>4.8</span>
-                  <div className={styles.stars}>
-                    {[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
-                  </div>
-                </div>
-                <div className={styles.verifiedBadge}>
-                  <ShieldCheck size={16} color="white" fill="#00a650" />
-                  <span>All reviews are from verified purchases</span>
-                </div>
-              </div>
-
-              <div className={styles.reviewTags}>
-                <button className={styles.reviewTag}>Beautiful(259)</button>
-                <button className={styles.reviewTag}>Very Nice(97)</button>
-                <button className={styles.reviewTag}>Good Value(124)</button>
-              </div>
-
-              <div className={styles.commentsList}>
-                {/* Review 1 */}
-                <div className={styles.commentItem}>
-                  <div className={styles.commentHeader}>
-                    <div className={styles.commentAvatar}></div>
-                    <div className={styles.commentAuthorInfo}>
-                      <span className={styles.commentAuthor}>71***75</span> in <span className={styles.flag}>🇱🇰</span> on Mar 23, 2025
-                    </div>
-                  </div>
-                  <div className={styles.commentStars}>
-                    {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
-                  </div>
-                  <div className={styles.commentText}>
-                    <ImageIcon size={14} className={styles.commentImgIcon} /> Good quality product.Very fast shipping.Thankd
-                  </div>
-                </div>
-
-                {/* Review 2 */}
-                <div className={styles.commentItem}>
-                  <div className={styles.commentHeader}>
-                    <div className={styles.commentAvatarBrown}>A</div>
-                    <div className={styles.commentAuthorInfo}>
-                      <span className={styles.commentAuthor}>Anuradhi De Silva</span> in <span className={styles.flag}>🇱🇰</span> on May 14, 2025
-                    </div>
-                  </div>
-                  <div className={styles.commentStars}>
-                    {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
-                  </div>
-                  <div className={styles.commentText}>
-                    <ImageIcon size={14} className={styles.commentImgIcon} /> good value for money., exactly as described., very nice, love them.
-                  </div>
-                </div>
-
-                {/* Review 3 */}
-                <div className={styles.commentItem}>
-                  <div className={styles.commentHeader}>
-                    <div className={styles.commentAvatar}></div>
-                    <div className={styles.commentAuthorInfo}>
-                      <span className={styles.commentAuthor}>MANUJI GAMAGE</span> in <span className={styles.flag}>🇱🇰</span> on Apr 16, 2025
-                    </div>
-                  </div>
-                  <div className={styles.commentStars}>
-                    {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
-                  </div>
-                  <div className={styles.commentText}>
-                    Beautiful and aesthetic. Expected quality. Satisfied.
-                  </div>
-                </div>
-              </div>
-            </div>
+            <CommentsSection
+              productId={id}
+              initialComments={(comments ?? []) as any}
+              currentUserId={user?.id ?? null}
+              allowComments={product.allow_comments}
+            />
           </div>
 
           {/* Right Column: Product Details */}
@@ -221,11 +166,17 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
               </div>
             </div>
 
-            <button className={styles.addToCartBtn} disabled={product.quantity === 0}>
-              {product.quantity > 0 
-                ? (discountPercent > 0 ? `-${discountPercent}% now! Add to cart!` : 'Add to cart')
-                : 'Sold Out'}
-            </button>
+            <AddToCartButton
+              product={{
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                discount_price: product.discount_price,
+                quantity: product.quantity,
+                images: product.images,
+              }}
+              discountPercent={discountPercent}
+            />
 
             <div className={styles.deliverySection}>
               <div className={styles.deliveryHeader}>

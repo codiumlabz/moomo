@@ -5,6 +5,7 @@ import { createClient } from '@/utils/supabase/client';
 import { ChevronRight, ShoppingCart, Star } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useCart } from '@/app/context/CartContext';
 
 const CATEGORIES = [
   "Recommended", "Beauty & Health", "Women's Clothing", "Home & Kitchen",
@@ -17,6 +18,7 @@ export default function DealsSection() {
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
+  const { addItem } = useCart();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -113,7 +115,15 @@ export default function DealsSection() {
                         )}
                         <span className={styles.soldCount}>🔥 {product.quantity > 0 ? 'In Stock' : 'Out of Stock'}</span>
                       </div>
-                      <button className={styles.cartBtn} onClick={(e) => e.preventDefault()}>
+                      <button className={styles.cartBtn} onClick={(e) => {
+                        e.preventDefault();
+                        addItem({
+                          id: product.id,
+                          name: product.name,
+                          price: product.discount_price ?? product.price,
+                          image: product.images?.[0] ?? "",
+                        });
+                      }}>
                         <ShoppingCart size={14} />
                       </button>
                     </div>

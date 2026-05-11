@@ -2,8 +2,18 @@ import ProductForm from "./ProductForm";
 import styles from "./NewProduct.module.css";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
 
-export default function NewProductPage() {
+export default async function NewProductPage() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  const { data: categories } = await supabase
+    .from("categories")
+    .select("id, name")
+    .order("name");
+
   return (
     <div className={styles.container}>
       <Link href="/admin" className={styles.backLink}>
@@ -16,7 +26,7 @@ export default function NewProductPage() {
         <p>Fill in the details below to list a new product on Moomo.</p>
       </header>
 
-      <ProductForm />
+      <ProductForm categories={categories || []} />
     </div>
   );
 }
