@@ -12,16 +12,39 @@ export async function login(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { error, data } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
 
   if (error) {
+    console.error('Login error:', error.message)
     return { error: error.message }
   }
 
-  revalidatePath('/', 'layout')
+  // Aggressively strip bloated metadata from old users to fix HTTP 431
+  const user = data?.user
+  if (user?.user_metadata?.avatar_url?.startsWith('data:') || user?.user_metadata?.avatar?.startsWith('data:')) {
+    const seed = encodeURIComponent(user.email || user.id)
+    const tinyAvatar = `https://api.dicebear.com/9.x/bottts/svg?seed=${seed}`
+    
+    await supabase.auth.updateUser({
+      data: { 
+        avatar_url: tinyAvatar,
+        avatar: null // Remove the duplicate field if it exists
+      }
+    })
+
+    // Re-fetch session to ensure the next request uses the cleaned JWT
+    if (data.session?.refresh_token) {
+      await supabase.auth.refreshSession({ refresh_token: data.session.refresh_token })
+    }
+  }
+
+  if (data?.session) {
+    revalidatePath('/', 'layout')
+  }
+
   return { success: true }
 }
 
@@ -33,8 +56,6 @@ export async function signup(formData: FormData) {
   const password = formData.get('password') as string
   const name = formData.get('name') as string
 
-  // Use DiceBear CDN URL (tiny string) instead of a base64 data URI
-  // A data URI is 50-100KB and bloats the JWT cookie causing HTTP 431
   const seed = encodeURIComponent(email || name)
   const avatarUrl = `https://api.dicebear.com/9.x/bottts/svg?seed=${seed}`
 
@@ -53,11 +74,6 @@ export async function signup(formData: FormData) {
     return { error: error.message }
   }
 
-  if (data?.user) {
-    // Save the avatar URL to the profiles table
-    await supabase.from('profiles').update({ avatar_url: avatarUrl }).eq('id', data.user.id)
-  }
-
   return { success: true }
 }
 
@@ -72,5 +88,18 @@ export async function signOut() {
   }
 
   revalidatePath('/', 'layout')
+  redirect('/')
+}
+
+export async function clearAuth() {
+  const cookieStore = await cookies()
+  const all = cookieStore.getAll()
+
+  for (const c of all) {
+    if (c.name.includes('auth-token') || c.name.includes('sb-') || c.name.includes('supabase')) {
+      cookieStore.set(c.name, '', { maxAge: 0, path: '/' })
+    }
+  }
+
   redirect('/')
 }

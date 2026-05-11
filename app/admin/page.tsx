@@ -80,11 +80,7 @@ export default async function AdminDashboard() {
                   <td>
                     <div className={styles.userCell}>
                       <div className={styles.avatar}>
-                        {user.avatar_url ? (
-                          <img src={user.avatar_url} alt={user.full_name} />
-                        ) : (
-                          <span>{user.full_name?.charAt(0) || "U"}</span>
-                        )}
+                        <span>{user.full_name?.charAt(0)?.toUpperCase() || "U"}</span>
                       </div>
                       <span>{user.full_name || "Anonymous"}</span>
                     </div>

@@ -37,11 +37,7 @@ export default async function AdminUsersPage() {
                 <td>
                   <div className={styles.userCell}>
                     <div className={styles.avatar}>
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.full_name} />
-                      ) : (
-                        <span>{user.full_name?.charAt(0)?.toUpperCase() || "U"}</span>
-                      )}
+                      <span>{user.full_name?.charAt(0)?.toUpperCase() || "U"}</span>
                     </div>
                     <div>
                       <div className={styles.name}>{user.full_name || "Anonymous"}</div>

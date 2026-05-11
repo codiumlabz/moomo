@@ -10,7 +10,6 @@ type ProfileData = {
   id: string;
   full_name: string;
   email: string;
-  avatar_url?: string;
   phone_1: string;
   phone_2: string;
   address: string;
@@ -57,11 +56,20 @@ export default function ProfileDashboard({ initialProfile }: { initialProfile: P
         <div className={styles.sidebarCard}>
           <div className={styles.userSummary}>
             <div className={styles.avatarContainer}>
-              {initialProfile.avatar_url ? (
-                <img src={initialProfile.avatar_url} alt="Profile Avatar" className={styles.avatarImage} />
-              ) : (
-                <User size={32} className={styles.iconLight} />
-              )}
+              <span style={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                backgroundColor: '#ff4747',
+                color: '#fff',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 20,
+                fontWeight: 700,
+              }}>
+                {(initialProfile.full_name || initialProfile.email || 'U').charAt(0).toUpperCase()}
+              </span>
             </div>
             <h2 className={styles.userName}>{initialProfile.full_name || 'My Profile'}</h2>
             <p className={styles.userEmail}>{initialProfile.email}</p>

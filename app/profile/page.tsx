@@ -24,8 +24,7 @@ export default async function ProfilePage() {
   const initialProfile = {
     id: user.id,
     email: user.email || '',
-    full_name: profile?.full_name || '',
-    avatar_url: profile?.avatar_url || user.user_metadata?.avatar_url || '',
+    full_name: profile?.full_name || user?.user_metadata?.name || '',
     phone_1: profile?.phone_1 || '',
     phone_2: profile?.phone_2 || '',
     address: profile?.address || '',

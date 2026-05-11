@@ -1,9 +1,10 @@
 "use client";
 
-import React from 'react';
+import styles from './DealsSection.module.css';
+import { createClient } from '@/utils/supabase/client';
 import { ChevronRight, ShoppingCart, Star } from 'lucide-react';
 import Link from 'next/link';
-import styles from './DealsSection.module.css';
+import { useEffect, useState } from 'react';
 
 const CATEGORIES = [
   "Recommended", "Beauty & Health", "Women's Clothing", "Home & Kitchen",
@@ -11,88 +12,42 @@ const CATEGORIES = [
   "Sports & Outdoors", "Office & School Supplies", "Toys & Games"
 ];
 
-const PRODUCTS = [
-  {
-    id: 1,
-    imageClass: styles.p1,
-    title: "Men's Canvas Backpack, Black, M...",
-    deal: true,
-    price: "1,112.33",
-    oldPrice: "2,432.42",
-    sold: "250K+",
-    tag: "Best-Selling Item",
-    tagDesc: "in Men's Shoulder Bags",
-    rating: 4.8,
-    reviews: "13,578"
-  },
-  {
-    id: 2,
-    imageClass: styles.p2,
-    title: "8pcs Mandala Coasters, Wooden Coaster S...",
-    deal: false,
-    price: "882.19",
-    oldPrice: "1,553.43",
-    sold: "100K+",
-    tag: "Best-Selling Item",
-    tagDesc: "in Dining & Entertaini...",
-    rating: 4.9,
-    reviews: "8,357"
-  },
-  {
-    id: 3,
-    imageClass: styles.p3,
-    title: "1 Set Professional Electric Engraving Hair C...",
-    deal: false,
-    price: "1,610.96",
-    oldPrice: "4,020.34",
-    sold: "700K+",
-    tag: "Best-Selling Item",
-    tagDesc: "in Hair Care",
-    rating: 4.6,
-    reviews: "23,404"
-  },
-  {
-    id: 4,
-    imageClass: styles.p4,
-    title: "Cartoon LED Table Lamp Button Battery Po...",
-    deal: false,
-    price: "1,221.01",
-    oldPrice: "2,060.02",
-    sold: "76K+",
-    tag: "Top Rated",
-    tagDesc: "in Lighting & Accessories",
-    rating: 4.9,
-    reviews: "6,631"
-  },
-  {
-    id: 5,
-    imageClass: styles.p5,
-    title: "20-Piece Mixed Color Small Hair Claws for ...",
-    deal: false,
-    price: "942.92",
-    oldPrice: "1,067.58",
-    sold: "100K+",
-    tag: "Best-Selling Item",
-    tagDesc: "in Hair Accessories",
-    rating: 4.7,
-    reviews: "8,457"
-  },
-  {
-    id: 6,
-    imageClass: styles.p1, /* Reusing a style since p6 doesn't exist yet */
-    title: "Smart Watch for Men Women, Fitness Tracker...",
-    deal: true,
-    price: "2,450.00",
-    oldPrice: "5,100.00",
-    sold: "50K+",
-    tag: "Top Rated",
-    tagDesc: "in Smartwatches",
-    rating: 4.9,
-    reviews: "12,104"
-  }
-];
 
 export default function DealsSection() {
+  const [products, setProducts] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const productsPromise = supabase
+          .from('products')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(12);
+        const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
+          setTimeout(() => reject(new Error('Products fetch timeout')), 10000)
+        );
+
+        const { data, error } = await Promise.race([productsPromise, timeoutPromise]);
+
+        if (error) {
+          console.error('Error fetching products:', error);
+          setProducts([]);
+        } else if (data) {
+          setProducts(data);
+        }
+      } catch (err) {
+        console.error('Fetch products error:', err);
+        setProducts([]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    
+    fetchProducts();
+  }, []);
   return (
     <section className={styles.sectionWrapper}>
       <div className="container">
@@ -119,50 +74,74 @@ export default function DealsSection() {
 
         {/* Products Grid */}
         <div className={styles.productsGrid}>
-          {PRODUCTS.map((product) => (
-            <Link href={`/product/${product.id}`} key={product.id} style={{ textDecoration: 'none', color: 'inherit', display: 'block', minWidth: 0 }}>
-              <div className={styles.productCard}>
-                <div className={`${styles.productImage} ${product.imageClass}`}></div>
-                
+          {isLoading ? (
+            Array(6).fill(0).map((_, i) => (
+              <div key={i} className={styles.productCard} style={{ opacity: 0.5, pointerEvents: 'none' }}>
+                <div className={styles.productImage} style={{ backgroundColor: '#eee' }}></div>
                 <div className={styles.productInfo}>
-                  <div className={styles.titleRow}>
-                    {product.deal && <span className={styles.dealBadge}>DEAL</span>}
-                    <span className={styles.productTitle}>{product.title}</span>
-                  </div>
-                  
-                  <div className={styles.priceRow}>
-                    <div className={styles.priceLeft}>
-                      <span className={styles.currency}>LKR</span>
-                      <span className={styles.currentPrice}>{product.price}</span>
-                      <span className={styles.oldPrice}>{product.oldPrice}</span>
-                      <span className={styles.soldCount}>🔥 {product.sold} sold</span>
-                    </div>
-                    <button className={styles.cartBtn} onClick={(e) => e.preventDefault()}>
-                      <ShoppingCart size={14} />
-                    </button>
-                  </div>
-                  
-                  <div className={styles.tagRow}>
-                    <span className={product.tag === 'Top Rated' ? styles.tagTop : styles.tagBest}>
-                      {product.tag}
-                    </span>
-                    <span className={styles.tagDesc}>{product.tagDesc}</span>
-                  </div>
-                  
-                  <div className={styles.ratingRow}>
-                    <div className={styles.stars}>
-                      <Star size={12} fill="currentColor" />
-                      <Star size={12} fill="currentColor" />
-                      <Star size={12} fill="currentColor" />
-                      <Star size={12} fill="currentColor" />
-                      <Star size={12} fill="currentColor" />
-                    </div>
-                    <span className={styles.reviewCount}>{product.reviews}</span>
-                  </div>
+                  <div style={{ height: '20px', width: '100%', backgroundColor: '#eee', marginBottom: '10px' }}></div>
+                  <div style={{ height: '20px', width: '60%', backgroundColor: '#eee' }}></div>
                 </div>
               </div>
-            </Link>
-          ))}
+            ))
+          ) : products.length > 0 ? (
+            products.map((product) => (
+              <Link href={`/product/${product.id}`} key={product.id} style={{ textDecoration: 'none', color: 'inherit', display: 'block', minWidth: 0 }}>
+                <div className={styles.productCard}>
+                  <div className={styles.productImage}>
+                    {product.images?.[0] ? (
+                      <img src={product.images[0]} alt={product.name} className={styles.cardImg} />
+                    ) : (
+                      <div className={styles.noImg}>No Image</div>
+                    )}
+                  </div>
+                  
+                  <div className={styles.productInfo}>
+                    <div className={styles.titleRow}>
+                      {product.discount_price && <span className={styles.dealBadge}>DEAL</span>}
+                      <span className={styles.productTitle}>{product.name}</span>
+                    </div>
+                    
+                    <div className={styles.priceRow}>
+                      <div className={styles.priceLeft}>
+                        <span className={styles.currency}>LKR</span>
+                        <span className={styles.currentPrice}>
+                          {(product.discount_price || product.price).toLocaleString()}
+                        </span>
+                        {product.discount_price && (
+                          <span className={styles.oldPrice}>{product.price.toLocaleString()}</span>
+                        )}
+                        <span className={styles.soldCount}>🔥 {product.quantity > 0 ? 'In Stock' : 'Out of Stock'}</span>
+                      </div>
+                      <button className={styles.cartBtn} onClick={(e) => e.preventDefault()}>
+                        <ShoppingCart size={14} />
+                      </button>
+                    </div>
+                    
+                    <div className={styles.tagRow}>
+                      <span className={styles.tagBest}>
+                        Best Value
+                      </span>
+                      <span className={styles.tagDesc}>in Category</span>
+                    </div>
+                    
+                    <div className={styles.ratingRow}>
+                      <div className={styles.stars}>
+                        <Star size={12} fill="currentColor" />
+                        <Star size={12} fill="currentColor" />
+                        <Star size={12} fill="currentColor" />
+                        <Star size={12} fill="currentColor" />
+                        <Star size={12} fill="currentColor" />
+                      </div>
+                      <span className={styles.reviewCount}>0</span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <div className={styles.emptyState}>No products found. Add some from the Admin Dashboard!</div>
+          )}
         </div>
         
       </div>

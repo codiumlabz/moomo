@@ -1,27 +1,51 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Download, Globe, User, ShoppingCart, Menu, ChevronDown, LogOut, Bird, Cat, Dog, Fish, Rabbit, Snail, Turtle, Bug, TreePine, TreeDeciduous } from 'lucide-react';
+import { Search, Download, Globe, User, ShoppingCart, Menu, ChevronDown } from 'lucide-react';
 import styles from './Header.module.css';
 import Image from 'next/image';
 import SignInPopup from './SignInPopup';
 import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
 
-const avatarIcons = [Bird, Cat, Dog, Fish, Rabbit, Snail, Turtle, Bug, TreePine, TreeDeciduous];
+function getInitials(name: string) {
+  if (!name) return '?';
+  return name.charAt(0).toUpperCase();
+}
+
+function stringToColor(str: string) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash % 360);
+  return `hsl(${hue}, 70%, 45%)`;
+}
 
 export default function Header() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
   
   const supabase = createClient();
 
   useEffect(() => {
     async function getUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-      setIsLoading(false);
+      try {
+        const userPromise = supabase.auth.getUser();
+        const timeoutPromise = new Promise<{ data: { user: null } }>((_, reject) =>
+          setTimeout(() => reject(new Error('Auth timeout')), 3000)
+        );
+        const { data: { user } } = await Promise.race([userPromise, timeoutPromise]);
+        setUser(user);
+      } catch (err) {
+        console.error('Error getting user:', err);
+      } finally {
+        setIsLoading(false);
+      }
     }
     getUser();
 
@@ -34,18 +58,8 @@ export default function Header() {
 
   const isAuthenticated = !!user;
   const displayName = user?.user_metadata?.name || user?.email || 'Account';
-  const avatarUrl = user?.user_metadata?.avatar_url;
-
-  const AvatarIcon = useMemo(() => {
-    if (!user) return User;
-    const str = user.id || user.email || '';
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    const index = Math.abs(hash) % avatarIcons.length;
-    return avatarIcons[index];
-  }, [user]);
+  const avatarBg = user ? stringToColor(user.id || user.email || '') : '#ccc';
+  const initials = getInitials(displayName);
 
   return (
     <header className={styles.headerWrapper}>
@@ -66,16 +80,26 @@ export default function Header() {
             </Link>
           </div>
           
-          <div className={styles.searchContainer}>
+          <form 
+            className={styles.searchContainer}
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim()) {
+                router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+              }
+            }}
+          >
             <input 
               type="text" 
               placeholder="Search for products, brands and more..." 
               className={styles.searchInput} 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <button className={styles.searchButton}>
+            <button type="submit" className={styles.searchButton}>
               <Search size={18} />
             </button>
-          </div>
+          </form>
 
           <div className={styles.actions}>
             <div className={styles.actionItem}>
@@ -105,11 +129,22 @@ export default function Header() {
             ) : isAuthenticated ? (
               <div className={styles.actionItem} style={{ cursor: 'pointer' }}>
                 <Link href="/profile" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
-                  {avatarUrl ? (
-                    <img src={avatarUrl} alt="Avatar" style={{ width: 20, height: 20, borderRadius: '50%', marginRight: '8px' }} />
-                  ) : (
-                    <AvatarIcon size={20} className={styles.actionIcon} style={{ color: '#ff4747', marginRight: '8px' }} />
-                  )}
+                  <span style={{
+                    width: 24,
+                    height: 24,
+                    borderRadius: '50%',
+                    backgroundColor: avatarBg,
+                    color: '#fff',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    fontWeight: 600,
+                    marginRight: 8,
+                    flexShrink: 0,
+                  }}>
+                    {initials}
+                  </span>
                   <div className={styles.actionText}>
                     <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {displayName}

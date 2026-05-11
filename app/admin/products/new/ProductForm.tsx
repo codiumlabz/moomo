@@ -53,7 +53,7 @@ export default function ProductForm() {
       // 1. Upload Images
       for (const file of images) {
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
         const filePath = `products/${fileName}`;
 
         const { data, error: uploadError } = await supabase.storage

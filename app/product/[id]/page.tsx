@@ -1,10 +1,45 @@
-import React from 'react';
-import Header from '../../components/Header';
-import { Share, Star, Check, ChevronRight, ShieldCheck, Truck, RotateCcw, ChevronDown, Smartphone, PackageCheck, Image as ImageIcon } from 'lucide-react';
 import styles from './ProductPage.module.css';
 import Link from 'next/link';
+import Header from '../../components/Header';
+import ProductGallery from './ProductGallery';
+import { Share, Star, Check, ChevronRight, ShieldCheck, Truck, RotateCcw, ChevronDown, Smartphone, PackageCheck, Image as ImageIcon } from 'lucide-react';
+import { createClient } from '@/utils/supabase/server';
+import { cookies } from 'next/headers';
+import { notFound } from 'next/navigation';
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params }: { params: { id: string } }) {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+
+  let product = null;
+  try {
+    const productPromise = supabase
+      .from('products')
+      .select('*')
+      .eq('id', params.id)
+      .single();
+
+    const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
+      setTimeout(() => reject(new Error('Product fetch timeout')), 10000)
+    );
+
+    const { data, error } = await Promise.race([productPromise, timeoutPromise]);
+    
+    if (error || !data) {
+      console.error('Error or timeout fetching product:', error);
+      notFound();
+    }
+    product = data;
+  } catch (err) {
+    console.error('Fetch product error:', err);
+    notFound();
+  }
+
+  const currentPrice = product.discount_price || product.price;
+  const discountPercent = product.discount_price 
+    ? Math.round(((product.price - product.discount_price) / product.price) * 100) 
+    : 0;
+
   return (
     <main className={styles.main}>
       <div className={styles.topBanner}>
@@ -54,32 +89,18 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       <Header />
       
       <div className={styles.container}>
-        {/* Breadcrumbs */}
         <div className={styles.breadcrumbs}>
           <Link href="/">Home</Link>
           <ChevronRight size={14} />
-          <Link href="#">Home & Kitchen</Link>
+          <Link href="#">Products</Link>
           <ChevronRight size={14} />
-          <Link href="#">Dining & Entertaining</Link>
-          <ChevronRight size={14} />
-          <span className={styles.currentBreadcrumb}>8pcs Mandala Coasters, Woo...</span>
+          <span className={styles.currentBreadcrumb}>{product.name}</span>
         </div>
 
         <div className={styles.productLayout}>
           {/* Left Column: Image Gallery and Reviews */}
           <div className={styles.galleryColumn}>
-            <div className={styles.galleryWrapper}>
-              <div className={styles.thumbnails}>
-                {[1, 2, 3, 4, 5, 6].map((idx) => (
-                  <div key={idx} className={`${styles.thumbnail} ${idx === 1 ? styles.activeThumb : ''}`}>
-                    <div className={styles.thumbnailImg}></div>
-                  </div>
-                ))}
-              </div>
-              <div className={styles.mainImageContainer}>
-                <div className={styles.mainImage}></div>
-              </div>
-            </div>
+            <ProductGallery images={product.images || []} name={product.name} />
 
             {/* Reviews Section */}
             <div className={styles.reviewsSection}>
@@ -160,7 +181,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className={styles.detailsColumn}>
             <div className={styles.titleSection}>
               <h1 className={styles.productTitle}>
-                8pcs Mandala Coasters, Wooden Coaster Set, Essential for Holiday Gatherings, Suitable for Bars, Offices, and Homes, All Occasions, Size 10cm x 10cm
+                {product.name} - {product.description.substring(0, 150)}...
               </h1>
               <button className={styles.shareBtn}>
                 <Share size={20} />
@@ -168,9 +189,9 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             </div>
 
             <div className={styles.statsRow}>
-              <span className={styles.soldCount}>100K+ sold</span>
+              <span className={styles.soldCount}>{product.quantity > 0 ? `${product.quantity} items left` : 'Out of Stock'}</span>
               <span className={styles.divider}>|</span>
-              <span className={styles.soldBy}>Sold by <span className={styles.avatar}>🧑‍🍳</span> <span className={styles.starSeller}><Star size={12} fill="white"/> Star seller <ChevronRight size={12} /></span></span>
+              <span className={styles.soldBy}>Sold by BudgetBuy Store <span className={styles.starSeller}><Star size={12} fill="white"/> Star seller <ChevronRight size={12} /></span></span>
               
               <div className={styles.ratingSection}>
                 <span className={styles.ratingNumber}>4.8</span>
@@ -186,10 +207,14 @@ export default function ProductPage({ params }: { params: { id: string } }) {
             </div>
 
             <div className={styles.priceSection}>
-              <span className={styles.oldPrice}>1,553.43</span>
+              {product.discount_price && (
+                <span className={styles.oldPrice}>{product.price.toLocaleString()}</span>
+              )}
               <span className={styles.currency}>LKR</span>
-              <span className={styles.newPrice}>882.19</span>
-              <span className={styles.discountBadge}>43% OFF</span>
+              <span className={styles.newPrice}>{currentPrice.toLocaleString()}</span>
+              {discountPercent > 0 && (
+                <span className={styles.discountBadge}>{discountPercent}% OFF</span>
+              )}
             </div>
 
             <div className={styles.shippingBanner}>
@@ -208,8 +233,10 @@ export default function ProductPage({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            <button className={styles.addToCartBtn}>
-              -43% now! Add to cart!
+            <button className={styles.addToCartBtn} disabled={product.quantity === 0}>
+              {product.quantity > 0 
+                ? (discountPercent > 0 ? `-${discountPercent}% now! Add to cart!` : 'Add to cart')
+                : 'Sold Out'}
             </button>
 
             <div className={styles.deliverySection}>

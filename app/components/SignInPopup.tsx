@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { X, Mail, Lock, User, AlertCircle, Loader2 } from "lucide-react";
 import styles from "./SignInPopup.module.css";
+import { useRouter } from "next/navigation";
 import { login, signup } from "../auth/actions";
 
 interface SignInPopupProps {
@@ -14,6 +15,7 @@ export default function SignInPopup({ isOpen, onClose }: SignInPopupProps) {
   const [step, setStep] = useState<"signIn" | "signUp">("signIn");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   if (!isOpen) return null;
 
@@ -37,6 +39,7 @@ export default function SignInPopup({ isOpen, onClose }: SignInPopupProps) {
           setError("Check your email to confirm your account!");
           // Don't close yet if they need to confirm email
         } else {
+          router.refresh();
           onClose();
         }
       }
