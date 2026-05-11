@@ -76,6 +76,19 @@ const PRODUCTS = [
     tagDesc: "in Hair Accessories",
     rating: 4.7,
     reviews: "8,457"
+  },
+  {
+    id: 6,
+    imageClass: styles.p1, /* Reusing a style since p6 doesn't exist yet */
+    title: "Smart Watch for Men Women, Fitness Tracker...",
+    deal: true,
+    price: "2,450.00",
+    oldPrice: "5,100.00",
+    sold: "50K+",
+    tag: "Top Rated",
+    tagDesc: "in Smartwatches",
+    rating: 4.9,
+    reviews: "12,104"
   }
 ];
 

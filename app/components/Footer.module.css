@@ -1,0 +1,219 @@
+.footer {
+  background-color: #1a1a1a;
+  color: #e5e5e5;
+  padding: 40px 0 20px;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 14px;
+  border-top: 1px solid #333;
+}
+
+.topGrid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.column:nth-child(1), .column:nth-child(2) {
+  grid-column: span 2;
+}
+
+.column:nth-child(3), .column:nth-child(4) {
+  grid-column: span 3;
+}
+
+.columnTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.link {
+  color: #a3a3a3;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.downloadSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.appButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.appButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  border: 1px solid #555;
+  border-radius: 30px;
+  padding: 8px 16px;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.2s, border-color 0.2s;
+  flex: 1;
+  justify-content: center;
+}
+
+.appButton:hover {
+  background-color: #333;
+  border-color: #fff;
+}
+
+.appButtonText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.appButtonSmallText {
+  font-size: 10px;
+  color: #a3a3a3;
+}
+
+.appButtonLargeText {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.socialSection {
+  margin-top: 30px;
+}
+
+.socialIcons {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.socialIcon {
+  color: #fff;
+  transition: color 0.2s;
+}
+
+.socialIcon:hover {
+  color: #a3a3a3;
+}
+
+.middleSection {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #333;
+  padding-bottom: 30px;
+  margin-bottom: 20px;
+  gap: 40px;
+}
+
+.certSection, .paymentSection {
+  flex: 1;
+}
+
+.badgeGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.badge {
+  background-color: #fff;
+  color: #000;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  min-width: 45px;
+}
+
+.bottomSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  color: #a3a3a3;
+  font-size: 12px;
+}
+
+.bottomLinks {
+  display: flex;
+  gap: 15px;
+}
+
+.bottomLink {
+  color: #a3a3a3;
+  text-decoration: none;
+}
+
+.bottomLink:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .topGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .middleSection {
+    flex-direction: column;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .topGrid {
+    grid-template-columns: 1fr;
+  }
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+  .bottomSection {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

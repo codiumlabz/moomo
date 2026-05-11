@@ -133,6 +133,25 @@
   font-weight: 600;
 }
 
+.signOutBtn {
+  background: none;
+  border: none;
+  color: #ff4747;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  transition: opacity 0.2s;
+}
+
+.signOutBtn:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
 /* Responsiveness */
 @media (max-width: 1024px) {
   .topBar {

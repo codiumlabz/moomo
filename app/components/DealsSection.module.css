@@ -83,7 +83,7 @@
 
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 1rem;
 }
 
@@ -248,7 +248,7 @@
 
 @media (max-width: 768px) {
   .productsGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
   .mainTitle {
     font-size: 1.4rem;
@@ -257,6 +257,6 @@
 
 @media (max-width: 480px) {
   .productsGrid {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }

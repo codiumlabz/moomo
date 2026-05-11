@@ -51,6 +51,13 @@ button {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 1rem;
+}
+
+.container > * {
+  grid-column: span 10;
 }
 
 .flex-center {
