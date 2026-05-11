@@ -12,6 +12,7 @@
     "@auth/core": "^0.37.0",
     "@dicebear/collection": "^9.4.2",
     "@dicebear/core": "^9.4.2",
+    "@netlify/next": "^1.4.9",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",
     "lucide-react": "^1.14.0",

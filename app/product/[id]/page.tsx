@@ -7,31 +7,19 @@ import { createClient } from '@/utils/supabase/server';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
 
-  let product = null;
-  try {
-    const productPromise = supabase
-      .from('products')
-      .select('*')
-      .eq('id', params.id)
-      .single();
+  const { data: product, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('id', id)
+    .single();
 
-    const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) =>
-      setTimeout(() => reject(new Error('Product fetch timeout')), 10000)
-    );
-
-    const { data, error } = await Promise.race([productPromise, timeoutPromise]);
-    
-    if (error || !data) {
-      console.error('Error or timeout fetching product:', error);
-      notFound();
-    }
-    product = data;
-  } catch (err) {
-    console.error('Fetch product error:', err);
+  if (error || !product) {
+    console.error('Error fetching product:', error?.message, '| id:', id);
     notFound();
   }
 
