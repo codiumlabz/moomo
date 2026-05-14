@@ -35,8 +35,8 @@ export default function SignInPopup({ isOpen, onClose }: SignInPopupProps) {
         setError(result.error);
       } else {
         // Success - refresh and close for both sign in and sign up
-        router.refresh();
         onClose();
+        window.location.reload();
       }
     } catch (err: unknown) {
       const msg =
