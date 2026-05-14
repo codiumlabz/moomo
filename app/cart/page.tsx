@@ -110,6 +110,7 @@ export default function CartPage() {
 
       {/* Content */}
       <div className={styles.container}>
+        
         <div className={styles.breadcrumbs}>
           <Link href="/">Home</Link>
           <ChevronRight size={14} />

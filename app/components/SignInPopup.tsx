@@ -34,14 +34,9 @@ export default function SignInPopup({ isOpen, onClose }: SignInPopupProps) {
       if (result?.error) {
         setError(result.error);
       } else {
-        // Success
-        if (step === "signUp") {
-          setError("Check your email to confirm your account!");
-          // Don't close yet if they need to confirm email
-        } else {
-          router.refresh();
-          onClose();
-        }
+        // Success - refresh and close for both sign in and sign up
+        router.refresh();
+        onClose();
       }
     } catch (err: unknown) {
       const msg =
