@@ -27,9 +27,8 @@ export default function SignInPopup({ isOpen, onClose }: SignInPopupProps) {
     const formData = new FormData(e.currentTarget);
 
     try {
-      const result = step === "signIn" 
-        ? await login(formData) 
-        : await signup(formData);
+      const action = step === "signIn" ? login : signup;
+      const result = await action(formData);
 
       if (result?.error) {
         setError(result.error);
