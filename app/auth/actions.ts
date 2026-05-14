@@ -63,6 +63,7 @@ export async function signup(formData: FormData) {
     email,
     password,
     options: {
+      emailRedirectTo: undefined,
       data: {
         name,
         avatar_url: avatarUrl,
@@ -72,6 +73,20 @@ export async function signup(formData: FormData) {
 
   if (error) {
     return { error: error.message }
+  }
+
+  // Auto-login user after signup (no email verification needed)
+  if (data?.user) {
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+
+    if (signInError) {
+      console.error('Auto-login error:', signInError.message)
+    } else {
+      revalidatePath('/', 'layout')
+    }
   }
 
   return { success: true }
