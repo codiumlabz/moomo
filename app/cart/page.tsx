@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './Cart.module.css';
 import SignInPopup from '../components/SignInPopup';
+import PaymentModal, { CardDetails } from '../components/PaymentModal';
 import { createClient } from '@/utils/supabase/client';
 import { useCart } from '@/app/context/CartContext';
 
@@ -22,10 +23,28 @@ function stringToColor(str: string) {
   return `hsl(${Math.abs(hash % 360)}, 70%, 45%)`;
 }
 
+function loadPayHereScript() {
+  const src = 'https://sandbox.payhere.lk/pay/payhere.js';
+  if (typeof window === 'undefined') return;
+  if (document.querySelector(`script[src="${src}"]`)) return;
+  const script = document.createElement('script');
+  script.src = src;
+  script.async = true;
+  document.body.appendChild(script);
+}
+
+function generateOrderId() {
+  return `order-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 export default function CartPage() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
   const [user, setUser] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [payHereReady, setPayHereReady] = useState(false);
   const { items, removeItem, updateQty, totalItems, totalPrice } = useCart();
   const supabase = createClient();
 
@@ -39,8 +58,78 @@ export default function CartPage() {
     }
     getUser();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
+    loadPayHereScript();
+    if (typeof window !== 'undefined') {
+      const payhereReadyTimer = window.setInterval(() => {
+        if ((window as any).payhere) {
+          setPayHereReady(true);
+          window.clearInterval(payhereReadyTimer);
+        }
+      }, 200);
+      return () => {
+        subscription.unsubscribe();
+        window.clearInterval(payhereReadyTimer);
+      };
+    }
     return () => subscription.unsubscribe();
   }, [supabase.auth]);
+
+  const handleCheckoutClick = () => {
+    if (!user) {
+      setIsSignInOpen(true);
+      return;
+    }
+    setIsPaymentModalOpen(true);
+  };
+
+  const handlePayment = async (cardDetails: CardDetails) => {
+    setIsProcessing(true);
+    setPaymentError(null);
+
+    try {
+      if (!payHereReady) {
+        throw new Error('PayHere is not ready yet. Please try again in a moment.');
+      }
+
+      const merchantId = process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID;
+      if (!merchantId) {
+        throw new Error('PayHere merchant ID is not configured.');
+      }
+
+      const firstName = cardDetails.cardholderName.trim().split(' ')[0] || 'Customer';
+      const lastName = cardDetails.cardholderName.trim().split(' ').slice(1).join(' ') || 'Customer';
+      const orderId = generateOrderId();
+      const itemsList = items.map((item) => `${item.name} x ${item.qty}`).join(', ');
+
+      const payload: Record<string, string> = {
+        sandbox: 'true',
+        merchant_id: merchantId,
+        return_url: `${window.location.origin}/payment-success?order_id=${encodeURIComponent(orderId)}`,
+        cancel_url: `${window.location.origin}/cart`,
+        order_id: orderId,
+        items: itemsList,
+        amount: totalPrice.toFixed(2),
+        currency: 'LKR',
+        first_name: firstName,
+        last_name: lastName,
+        email: cardDetails.email,
+        phone: cardDetails.phone,
+        address: cardDetails.address,
+        city: '',
+        country: 'Sri Lanka',
+        delivery_address: cardDetails.address,
+        delivery_city: '',
+        delivery_country: 'Sri Lanka',
+        custom_1: '',
+        custom_2: '',
+      };
+
+      (window as any).payhere.startPayment(payload);
+    } catch (error) {
+      setPaymentError(error instanceof Error ? error.message : 'Payment failed. Please try again.');
+      setIsProcessing(false);
+    }
+  };
 
   const isAuthenticated = !!user;
   const displayName = user?.user_metadata?.name || user?.email || 'Account';
@@ -110,7 +199,7 @@ export default function CartPage() {
 
       {/* Content */}
       <div className={styles.container}>
-        
+
         <div className={styles.breadcrumbs}>
           <Link href="/">Home</Link>
           <ChevronRight size={14} />
@@ -203,7 +292,7 @@ export default function CartPage() {
               </div>
               <p className={styles.summaryNote}>Please refer to your final actual payment amount.</p>
 
-              <button className={styles.checkoutBtn} disabled={items.length === 0}>
+              <button className={styles.checkoutBtn} disabled={items.length === 0} onClick={handleCheckoutClick}>
                 Checkout ({totalItems})
               </button>
 
@@ -241,6 +330,13 @@ export default function CartPage() {
       </div>
 
       <SignInPopup isOpen={isSignInOpen} onClose={() => setIsSignInOpen(false)} />
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => !isProcessing && setIsPaymentModalOpen(false)}
+        totalAmount={totalPrice}
+        onPayment={handlePayment}
+        isLoading={isProcessing}
+      />
     </main>
   );
 }
