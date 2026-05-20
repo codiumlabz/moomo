@@ -166,6 +166,26 @@ export default function CheckoutPage() {
       const lastName = formData.cardholderName.trim().split(' ').slice(1).join(' ') || 'Customer';
       const orderId = generateOrderId();
       const itemsList = items.map((item) => `${item.name} x ${item.qty}`).join(', ');
+      const amountValue = totalPrice.toFixed(2);
+      const currencyValue = 'LKR';
+
+      // 1. Fetch the security hash from the backend API
+      const hashRes = await fetch('/api/payhere-hash', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          order_id: orderId,
+          amount: totalPrice,
+          currency: currencyValue,
+        }),
+      });
+
+      if (!hashRes.ok) {
+        const errData = await hashRes.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to generate payment hash.');
+      }
+
+      const { hash } = await hashRes.json();
 
       const payload: Record<string, any> = {
         sandbox: process.env.NEXT_PUBLIC_PAYHERE_SANDBOX !== 'false',
@@ -174,8 +194,9 @@ export default function CheckoutPage() {
         cancel_url: `${window.location.origin}/cart`,
         order_id: orderId,
         items: itemsList,
-        amount: totalPrice.toFixed(2),
-        currency: 'LKR',
+        amount: amountValue,
+        currency: currencyValue,
+        hash: hash,
         first_name: firstName,
         last_name: lastName,
         email: formData.email,
