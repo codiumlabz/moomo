@@ -11,10 +11,24 @@ export async function POST(request: NextRequest) {
     }
 
     const merchantId = process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_ID;
-    const merchantSecret = process.env.PAYHERE_MERCHANT_SECRET || process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_SECRET;
+    const merchantSecretEnv = process.env.PAYHERE_MERCHANT_SECRET || process.env.NEXT_PUBLIC_PAYHERE_MERCHANT_SECRET;
 
-    if (!merchantId || !merchantSecret) {
+    if (!merchantId || !merchantSecretEnv) {
       return NextResponse.json({ error: 'PayHere credentials not configured on server' }, { status: 500 });
+    }
+
+    // Auto-decode base64 secret if needed
+    let merchantSecret = merchantSecretEnv;
+    if (/^[A-Za-z0-9+/]+={0,2}$/.test(merchantSecretEnv) && merchantSecretEnv.length % 4 === 0 && merchantSecretEnv.includes('=')) {
+      try {
+        const decoded = Buffer.from(merchantSecretEnv, 'base64').toString('utf8');
+        if (/^[a-zA-Z0-9]+$/.test(decoded)) {
+          merchantSecret = decoded;
+          console.log('Decoded PayHere Merchant Secret from Base64 successfully');
+        }
+      } catch (e) {
+        console.warn('Failed to decode base64 merchant secret, using raw value', e);
+      }
     }
 
     // Format amount to 2 decimal places (e.g. 1500.00)
