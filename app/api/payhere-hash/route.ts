@@ -1,6 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
+/**
+ * Resolves the PayHere merchant secret.
+ * PayHere shows secrets in their portal as base64-encoded strings.
+ * This function tries to decode it; if the decoded result is a valid
+ * alphanumeric string (the real secret), it returns that.
+ * Otherwise, returns the raw value unchanged.
+ */
+function resolveMerchantSecret(raw: string): { secret: string; wasDecoded: boolean } {
+  const isBase64 = /^[A-Za-z0-9+/]+=*$/.test(raw) && raw.length % 4 === 0;
+
+  if (isBase64) {
+    try {
+      const decoded = Buffer.from(raw, 'base64').toString('utf8');
+      // Valid if decoded result is purely alphanumeric (PayHere secrets are numeric strings)
+      if (/^[a-zA-Z0-9]+$/.test(decoded) && decoded.length >= 10) {
+        return { secret: decoded, wasDecoded: true };
+      }
+    } catch {
+      // fall through
+    }
+  }
+
+  // Also try padding if length not divisible by 4
+  if (raw.length % 4 !== 0) {
+    const padded = raw + '='.repeat((4 - (raw.length % 4)) % 4);
+    try {
+      const decoded = Buffer.from(padded, 'base64').toString('utf8');
+      if (/^[a-zA-Z0-9]+$/.test(decoded) && decoded.length >= 10) {
+        return { secret: decoded, wasDecoded: true };
+      }
+    } catch {
+      // fall through
+    }
+  }
+
+  return { secret: raw, wasDecoded: false };
+}
+
+export function generatePayhereHash(
+  merchantId: string,
+  orderId: string,
+  amount: string,
+  currency: string,
+  merchantSecret: string
+): string {
+  const hashedSecret = crypto
+    .createHash('md5')
+    .update(merchantSecret)
+    .digest('hex')
+    .toUpperCase();
+
+  const rawString = merchantId + orderId + amount + currency + hashedSecret;
+
+  return crypto.createHash('md5').update(rawString).digest('hex').toUpperCase();
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -17,38 +73,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'PayHere credentials not configured on server' }, { status: 500 });
     }
 
-    // Auto-decode base64 secret if needed
-    let merchantSecret = merchantSecretEnv;
-    if (/^[A-Za-z0-9+/]+={0,2}$/.test(merchantSecretEnv) && merchantSecretEnv.length % 4 === 0 && merchantSecretEnv.includes('=')) {
-      try {
-        const decoded = Buffer.from(merchantSecretEnv, 'base64').toString('utf8');
-        if (/^[a-zA-Z0-9]+$/.test(decoded)) {
-          merchantSecret = decoded;
-          console.log('Decoded PayHere Merchant Secret from Base64 successfully');
-        }
-      } catch (e) {
-        console.warn('Failed to decode base64 merchant secret, using raw value', e);
-      }
-    }
+    const { secret: merchantSecret, wasDecoded } = resolveMerchantSecret(merchantSecretEnv);
+    console.log(`[PayHere] Using ${wasDecoded ? 'decoded (base64)' : 'raw'} merchant secret. Secret length: ${merchantSecret.length}`);
 
     // Format amount to 2 decimal places (e.g. 1500.00)
     const formattedAmount = Number(amount).toFixed(2);
 
-    // Calculate MD5 hash:
-    // hash = UPPERCASE(MD5(merchant_id + order_id + formattedAmount + currency + UPPERCASE(MD5(merchant_secret))))
-    const hashedSecret = crypto
-      .createHash('md5')
-      .update(merchantSecret)
-      .digest('hex')
-      .toUpperCase();
-
-    const rawString = merchantId + order_id + formattedAmount + currency + hashedSecret;
-
-    const hash = crypto
-      .createHash('md5')
-      .update(rawString)
-      .digest('hex')
-      .toUpperCase();
+    const hash = generatePayhereHash(merchantId, order_id, formattedAmount, currency, merchantSecret);
 
     return NextResponse.json({ hash });
   } catch (error: any) {
