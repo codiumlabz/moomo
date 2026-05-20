@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Script from 'next/script';
 import { Lock, AlertCircle, Loader2, ChevronRight, ShoppingCart, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -20,14 +21,33 @@ interface FormData {
   address: string;
 }
 
-function loadPayHereScript() {
-  const src = 'https://sandbox.payhere.lk/pay/payhere.js';
+const payHereScriptUrl = process.env.NEXT_PUBLIC_PAYHERE_SCRIPT_URL || 'https://www.payhere.lk/lib/payhere.js';
+
+function injectPayHereScript(src: string, mark?: string) {
   if (typeof window === 'undefined') return;
   if (document.querySelector(`script[src="${src}"]`)) return;
-  const script = document.createElement('script');
-  script.src = src;
-  script.async = true;
-  document.body.appendChild(script);
+
+  const s = document.createElement('script');
+  s.src = src;
+  s.type = 'text/javascript';
+  s.async = false;
+  s.defer = true;
+  s.setAttribute('data-payhere-loader', mark || '1');
+  s.onload = () => console.log('PayHere script loaded:', src);
+  s.onerror = (e) => {
+    console.error('Failed to load PayHere script:', e, 'src=', src);
+  };
+  document.body.appendChild(s);
+}
+
+function loadPayHereScript() {
+  if (typeof window === 'undefined') return;
+  if (document.querySelector('script[data-payhere-loader]')) return;
+  injectPayHereScript(payHereScriptUrl);
+}
+
+function handlePayHereScriptError(event: Event) {
+  console.error('PayHere script failed via next/script', event);
 }
 
 function generateOrderId() {
@@ -69,13 +89,29 @@ export default function CheckoutPage() {
     getUser();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
     loadPayHereScript();
-    const timer = window.setInterval(() => {
+    let timer: number | null = null;
+    let timeoutId: number | null = null;
+
+    const checkReady = () => {
       if ((window as any).payhere) {
         setPayHereReady(true);
-        window.clearInterval(timer);
+        console.log('PayHere is available on window.payhere');
+        if (timer) window.clearInterval(timer);
+        if (timeoutId) window.clearTimeout(timeoutId);
       }
-    }, 200);
-    return () => { subscription.unsubscribe(); window.clearInterval(timer); };
+    };
+
+    timer = window.setInterval(checkReady, 500);
+    // fail after 10s with a helpful error
+    timeoutId = window.setTimeout(() => {
+      if (!((window as any).payhere)) {
+        console.error('PayHere did not initialize within 10s');
+        setError('PayHere failed to initialize. Check network/CSP or try again later.');
+      }
+      if (timer) window.clearInterval(timer);
+    }, 10000);
+
+    return () => { subscription.unsubscribe(); if (timer) window.clearInterval(timer); if (timeoutId) window.clearTimeout(timeoutId); };
   }, [supabase.auth]);
 
   useEffect(() => {
@@ -187,6 +223,13 @@ export default function CheckoutPage() {
 
   return (
     <main className={styles.main}>
+      <Script
+        src={payHereScriptUrl}
+        strategy="afterInteractive"
+        data-payhere-loader="1"
+        onLoad={() => console.log('PayHere script loaded via next/script')}
+        onError={handlePayHereScriptError}
+      />
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <Link href="/" style={{ textDecoration: 'none' }}>
