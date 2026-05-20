@@ -167,8 +167,8 @@ export default function CheckoutPage() {
       const orderId = generateOrderId();
       const itemsList = items.map((item) => `${item.name} x ${item.qty}`).join(', ');
 
-      const payload: Record<string, string> = {
-        sandbox: 'true',
+      const payload: Record<string, any> = {
+        sandbox: process.env.NEXT_PUBLIC_PAYHERE_SANDBOX !== 'false',
         merchant_id: merchantId,
         return_url: `${window.location.origin}/payment-success?order_id=${encodeURIComponent(orderId)}`,
         cancel_url: `${window.location.origin}/cart`,
